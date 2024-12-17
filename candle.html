@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/candle.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.dom.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Playwrite+IS:wght@100..400&family=Satisfy&family=Sofia&display=swap"
+      rel="stylesheet"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  <script src="https://kit.fontawesome.com/4737a162b6.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <a href="/" style="text-decoration: none; color: white">Home</a>
+      <a href="/candle.html" style="text-decoration: none; color: white">Candle</a>
+      <a href="/box.html" style="text-decoration: none; color: white">Box Breathing</a>
+      <a href="/affirmations.html" style="text-decoration: none; color: white"
+        >Affirmations</a
+      >
+      <a href="/mandala.html" style="text-decoration: none; color: white">Mandala</a>
+      <a href="/kaledioscope.html" style="text-decoration: none; color: white">Kaledioscope</a>
+      <button id="music-toggle" class="music-btn">
+        <i id="music-icon" class="fas fa-play"></i> Music
+      </button>
+    </div>
+    <div id="instructionModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="animate__animated animate__fadeInDown ">
+          <h2>Welcome to the Breathing Exercise</h2>
+          <p>Follow the steps below to begin your exercise:</p>
+          <ol>
+            <li>Enter the number of breathing cycles you want to complete.</li>
+            <li>Click the "Start Breathing Exercise" button.</li>
+            <li>Follow the on-screen instructions for inhale and exhale.</li>
+            <li>Try to blow out the candle during the exhale phase!</li>
+          </ol>
+          <p>
+            This exercise uses your microphone to detect your breath. Please
+            ensure you grant microphone access when prompted.
+          </p>
+        </div>
+
+        <button id="candleStartButton">Got It, Let’s Begin</button>
+      </div>
+    </div>
+    <h1 class=" animate__animated animate__fadeInLeft">Candle Breathing</h1>
+    <div id="container">
+      <div id="instructions">
+        Click the button below to start the breathing exercise.
+      </div>
+      <div id="controls">
+        <div id="cycle-input">
+          <label for="cycles">Number of Breathing Cycles:</label>
+          <input type="number" id="cycles" min="1" value="3" />
+        </div>
+
+        <button id="start-button">Start Breathing Exercise</button>
+      </div>
+   
+
+      <!-- FLAME -->
+      <canvas id="canvas" ></canvas>
+    </div>
+    <script src="js/candleInst.js"></script>
+    <script src="js/candle.js"></script>
+  </body>
+</html>

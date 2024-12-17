@@ -1,0 +1,210 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Gowun+Dodum&family=Ms+Madi&display=swap");
+:root {
+  --text: rgb(239, 229, 234);
+  --background: rgb(11, 5, 8);
+  --primary: rgb(216, 158, 179);
+  --secondary: rgb(72, 122, 130);
+  --accent: rgb(114, 166, 144);
+  --mainFont: "Gowun Dodum", sans-serif;
+  --titleFont: "Dancing Script", cursive;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--mainFont);
+  background-color: var(--background);
+}
+canvas {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+h1 {
+  text-align: center;
+  color: var(--text);
+  font-family: var(--titleFont);
+  font-size: 7rem;
+  animation-duration: 1s;
+  margin: 0;
+  text-shadow: -2px -2px 0 rgb(54, 104, 113), 4px -4px 0 rgb(54, 104, 113),
+    1px 1px 0 rgb(54, 104, 113), 1px 1px 0 rgb(54, 104, 113);
+}
+
+.mouse {
+  text-align: center;
+  color: var(--text);
+  font-family: var(--titleFont);
+  font-size: 2.3rem;
+  bottom: 0%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+.sub-heading {
+  text-align: center;
+  color: var(--text);
+  font-family: var(--mainFont);
+  font-size: 2.6rem;
+}
+
+.button-33 {
+  background-color: #c2fbd7;
+  border-radius: 10px;
+  box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
+    rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
+    rgba(44, 187, 99, 0.15) 0 16px 32px;
+  color: green;
+  cursor: pointer;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  flex-direction: column;
+  font-family: var(--mainFont);
+  padding: 7px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 250ms;
+  border: 0;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  height: 50vh;
+  width: 100%;
+}
+
+.button-33:hover {
+  box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
+    rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
+    rgba(44, 187, 99, 0.25) 0 4px 8px, rgba(44, 187, 99, 0.25) 0 8px 16px,
+    rgba(44, 187, 99, 0.25) 0 16px 32px;
+  transform: scale(1.05) rotate(-1deg);
+}
+
+.options {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 1.1rem;
+  width: 90vw;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.info {
+  display: flex;
+  height: 70%;
+  width: 95%;
+  background-color: white;
+}
+#grid-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  margin: 0 auto;
+  width: 100%;
+  height: 50vh;
+  animation: fadeIn;
+  animation-duration: 2s;
+}
+
+/* Grid Item Styling */
+.grid-item {
+  background-color: rgb(11, 5, 8, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0);
+  padding: 20px;
+  width: 20%;
+  height: 80%;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item img {
+  max-width: 100%;
+  height: 70%;
+  border-radius: 10px;
+  opacity: 85%;
+}
+
+.grid-item h3 {
+  font-size: 2rem;
+  margin: 10px 0;
+  color: white;
+  font-family: var(--titleFont);
+}
+
+.grid-item .link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: var(--secondary);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.grid-item .link:hover {
+  background-color: var(--primary);
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4rem;
+}
+
+#embed-iframe {
+  position: absolute;
+  right: 0;
+}
+.heading-text {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.navbar {
+  height: 3vh;
+  font-family: var(--mainFont);
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  width: 100vw;
+  background-color: rgb(216, 158, 179, 0.6);
+}
+
+.navbar a:hover {
+  scale: 2;
+  cursor: pointer;
+  transition: 0.5s;
+  text-decoration: underline;
+}
+
+#music-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1rem;
+}

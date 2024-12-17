@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+     <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/box.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.dom.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Playwrite+GB+S:ital,wght@0,100..400;1,100..400&family=Playwrite+IS:wght@100..400&family=Satisfy&family=Sofia&display=swap"
+      rel="stylesheet"
+    />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  <script src="https://kit.fontawesome.com/4737a162b6.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <a href="/" style="text-decoration: none; color: white">Home</a>
+      <a href="/candle.html" style="text-decoration: none; color: white">Candle</a>
+      <a href="/box.html" style="text-decoration: none; color: white">Box Breathing</a>
+      <a href="/affirmations.html" style="text-decoration: none; color: white"
+        >Affirmations</a
+      >
+      <a href="/mandala.html" style="text-decoration: none; color: white">Mandala</a>
+      <a href="/kaledioscope.html" style="text-decoration: none; color: white">Kaledioscope</a>
+      <button id="music-toggle" class="music-btn">
+        <i id="music-icon" class="fas fa-play"></i> Music
+      </button>
+    </div>
+    <div id="instructionModal" class="modal" >
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="animate__animated animate__fadeInDown " >
+          <h2>Welcome!</h2>
+          <p>This tool is designed to help you practice mindfulness and breathing exercises interactively. Follow the instructions below to get started:</p>
+          <ol>
+            <li><b>Adjust Your Preferences:</b> Use the sliders to set the duration for inhale, exhale, and hold phases.</li>
+            <li><b>Observe the Visuals:</b> Follow the moving circle as it guides your breathing phases.</li>
+            <li><b>Sync Your Breathing:</b> Inhale, hold, and exhale in rhythm with the visuals.</li>
+            <li><b>Modify and Experiment:</b> Adjust the sliders anytime to match your desired pace.</li>
+          </ol>
+          <p style="text-align: center;"><b>Tips:</b> Find a quiet space, focus on your breathing, and enjoy the journey!</p>
+        </div>
+
+        <button id="start-button">Got It, Let's Start!</button>
+      </div>
+    </div>
+    
+    <h1>Box Breathing</h1>
+  
+    <div class="durations">
+        <div class="duration-label">
+
+        </div>
+        <div class="duration-label">
+          
+        </div>
+    </div>
+    <div id="controls">
+      <div class="slider">
+        <div class="slider-label">Adjust Breath Duration</div>
+      </div>
+      <div class="slider">
+        <div class="slider-label">Adjust Hold Duration</div>
+      </div>
+    </div>
+    <div id="container"> </div>
+    <script src="js/script.js"></script>
+    <script src="js/box-breathing.js"></script>
+  </body>
+</html>
