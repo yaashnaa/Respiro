@@ -13,7 +13,7 @@ let flowField = [];
 let sound;
 let isPlaying = false;
 function preload() {
-  sound = loadSound('/sounds/track1.wav'); 
+  sound = loadSound('./sounds/track1.wav'); 
 }
 
 function setup() {
