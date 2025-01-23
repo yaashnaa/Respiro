@@ -36,6 +36,7 @@ function mousePressed() {
     noiseSeed(millis())
   }
 function draw() {
+  console.log('started')
   background(0, 20); 
   
   let yoff = 0;
