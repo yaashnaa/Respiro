@@ -13,12 +13,12 @@ let flowField = [];
 let sound;
 let isPlaying = false;
 function preload() {
-  sound = loadSound('./sounds/track1.wav'); 
+  sound = loadSound("./sounds/track1.wav");
 }
 
 function setup() {
-  canvas= createCanvas(windowWidth, windowHeight);
-  frameRate(30); 
+  canvas = createCanvas(windowWidth, windowHeight);
+  frameRate(30);
   zoff = 0;
   scl = 40;
   inc = 0.1;
@@ -29,15 +29,15 @@ function setup() {
   for (let i = 0; i < 150; i++) {
     particles[i] = new Particle(random(width), random(height));
   }
-  
-  background(0); 
+
+  background(0);
 }
 function mousePressed() {
-    noiseSeed(millis())
-  }
+  noiseSeed(millis());
+}
 function draw() {
-  background(0, 20); 
-  
+  background(0, 20);
+
   let yoff = 0;
   for (let y = 0; y < rows; y++) {
     let xoff = 0;
@@ -49,19 +49,18 @@ function draw() {
       let v = p5.Vector.fromAngle(angle);
       v.setMag(0.5);
 
-
       let mousePos = createVector(mouseX, mouseY);
       let gridPos = createVector(x * scl, y * scl);
       let distance = mousePos.dist(gridPos);
-      if (distance < 100) { 
+      if (distance < 100) {
         let repelForce = p5.Vector.sub(gridPos, mousePos);
-        repelForce.setMag(map(distance, 0, 500, 1, 0)); 
+        repelForce.setMag(map(distance, 0, 500, 1, 0));
         v.add(repelForce);
       }
-      
+
       flowField[index] = v;
 
-      stroke(216, 158, 179, 150); 
+      stroke(216, 158, 179, 150);
       strokeWeight(0.05);
       push();
       translate(x * scl, y * scl);
@@ -73,7 +72,7 @@ function draw() {
     }
     yoff += inc;
   }
-  
+
   zoff += 0.0002;
   for (let i = 0; i < particles.length; i++) {
     particles[i].follow(flowField);
@@ -81,17 +80,17 @@ function draw() {
     particles[i].edges();
     particles[i].show();
   }
-  
+
   fr.html(floor(frameRate()) + " fps");
 }
 
 class Particle {
-  constructor(x,y) {
-    this.pos = createVector(x,y);
+  constructor(x, y) {
+    this.pos = createVector(x, y);
     this.vel = createVector(0, 0);
     this.acc = createVector(0, 0);
-    this.maxSpeed = 4; 
-    this.color = color(216, 158, 179); 
+    this.maxSpeed = 4;
+    this.color = color(216, 158, 179);
   }
 
   follow(vectors) {
@@ -128,25 +127,25 @@ class Particle {
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth, windowHeight); 
-    cols = floor(width / scl);
-    rows = floor(height / scl);
-  }
+  resizeCanvas(windowWidth, windowHeight);
+  cols = floor(width / scl);
+  rows = floor(height / scl);
+}
 
-  window.onload = function () {
-    const musicButton = document.getElementById("music-toggle");
-    const musicIcon = document.getElementById("music-icon");
-  
-    musicButton.addEventListener("click", () => {
-      if (!isPlaying) {
-        sound.loop(); // Loop the music
-        musicIcon.classList.remove("fa-play");
-        musicIcon.classList.add("fa-pause");
-      } else {
-        sound.pause(); // Pause the music
-        musicIcon.classList.remove("fa-pause");
-        musicIcon.classList.add("fa-play");
-      }
-      isPlaying = !isPlaying; // Toggle the play state
-    });
-  };
+window.onload = function () {
+  const musicButton = document.getElementById("music-toggle");
+  const musicIcon = document.getElementById("music-icon");
+
+  musicButton.addEventListener("click", () => {
+    if (!isPlaying) {
+      sound.loop(); // Loop the music
+      musicIcon.classList.remove("fa-play");
+      musicIcon.classList.add("fa-pause");
+    } else {
+      sound.pause(); // Pause the music
+      musicIcon.classList.remove("fa-pause");
+      musicIcon.classList.add("fa-play");
+    }
+    isPlaying = !isPlaying; // Toggle the play state
+  });
+};

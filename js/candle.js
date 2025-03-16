@@ -1,6 +1,4 @@
 // Candle Breathing Exercise - Main Function
-// I refactored this code for better readability, modularity, and maintainability.
-// I also removed redundant code and improved error handling.
 
 // Audio Variables
 let audioContext;
