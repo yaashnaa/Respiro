@@ -67,14 +67,14 @@ function affirmationSketch(p) {
 
   p.preload = function () {
     // I added error handling for sound loading to catch failures.
-    sound = p.loadSound("/2.wav", () => console.log("Sound loaded successfully."),
+    sound = p.loadSound("../sounds/track2.wav", () => console.log("Sound loaded successfully."),
       (err) => console.error("Failed to load sound:", err));
   };
 
   p.setup = function () {
     let canvas = p.createCanvas(600, 400);
     canvas.parent("container");
-    p.background(200);
+    p.background(200);  
 
     setupMicrophone();
     setupSpeechRecognition();

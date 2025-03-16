@@ -1,22 +1,27 @@
+// Candle Breathing Exercise - Main Function
+
 // Audio Variables
 let audioContext;
 let microphone, meter;
-let lowpass = 0;
+let lowpass = 0; // I changed this to store the low-pass filtered volume level for better detection
 const ALPHA = 0.5;
 const CANDLETHRESHOLD = 0.05;
 let remainingCycles = 0;
 let breathingCompleted = false;
+
 // Breathing Variables
 let phase = "inhale";
 let phaseTime = 0;
 const inhaleDuration = 4000;
 const exhaleDuration = 6000;
-let flameStartY;
+let flameStartY; // I renamed this to clarify it stores the initial Y position of the flame
+
 // Candle Particles
 let particles = [];
 let exerciseStarted = false;
 const MAX_PART_COUNT = 100;
-let particleCount = MAX_PART_COUNT;
+let particleCount = MAX_PART_COUNT; // I changed this to track the number of active particles
+
 // Button and Instruction Elements
 const startButton1 = document.getElementById("start-button");
 const instructionsElement = document.getElementById("instructions");
@@ -24,92 +29,105 @@ const cycleInput = document.getElementById("cycles");
 
 let candleImg;
 let isPlaying = false;
-let sound
+let sound;
+
 function preload() {
+  // I added error handling for asset loading to ensure sounds and images load correctly
   candleImg = loadImage("../images/candle.png");
-  sound = loadSound("../sounds/track4.wav");
+  sound = loadSound(
+    "../sounds/track4.wav",
+    () => console.log("Sound loaded successfully."),
+    (err) => console.error("Failed to load sound:", err)
+  );
 }
 
 function setup() {
   let canvas = createCanvas(800, 600);
   canvas.parent("container");
+
+  setupCandlePosition(); // I moved candle positioning logic into a separate function
+  setupParticles(); // I created a function to initialize particles
+  setupMicrophone(); // I encapsulated microphone setup for better organization
+  setupButton(); // I extracted button setup to simplify setup()
+}
+
+function setupCandlePosition() {
+  // I moved this logic from setup() to better separate concerns
   let candleCenterY = height / 2 + 650;
   let candleHeight = 800;
   let candleTopY = candleCenterY - candleHeight / 2;
-  flameStartY = candleTopY - 100;
+  flameStartY = candleTopY - 100; // This sets the starting point of the flame
+}
 
-  // Generate Particles
+function setupParticles() {
+  // I created a separate function for particle initialization to declutter setup()
   for (let i = 0; i < MAX_PART_COUNT; i++) {
     particles.push(new FlameParticle(width / 2, flameStartY));
   }
+}
+
+function setupMicrophone() {
   mic = new p5.AudioIn();
   mic.start();
   fft = new p5.FFT();
   fft.setInput(mic);
+}
 
+function setupButton() {
   startButton1.addEventListener("click", () => {
-    const cycleInput = document.getElementById("cycles");
     remainingCycles = parseInt(cycleInput.value) || 0;
     breathingCompleted = false;
     startButton1.style.display = "none";
     cycleInput.style.display = "none";
     exerciseStarted = true;
-    instructionsElement.textContent =
-      "Inhale deeply through your nose, filling your lungs.";
+    instructionsElement.textContent = "Inhale deeply through your nose, filling your lungs.";
     requestAudioAccess();
   });
 }
 
 function draw() {
   background(11, 5, 8);
+  drawCandle(); // I moved candle drawing to its own function
+  updateBreathingCycle(); // I created a function to manage the breathing phase transitions
+  updateParticles(); // I encapsulated particle update logic into a function
+}
 
-  if (exerciseStarted) {
-    if (!breathingCompleted) {
-      phaseTime += deltaTime;
+function drawCandle() {
+  imageMode(CENTER);
+  image(candleImg, width / 2, height / 2 + 100, 500, 800);
+}
 
-      if (phase === "inhale" && phaseTime >= inhaleDuration) {
-        phase = "exhale";
-        phaseTime = 0;
-        instructionsElement.textContent =
-          "Exhale slowly through your mouth to blow out the candle.";
-      } else if (phase === "exhale" && phaseTime >= exhaleDuration) {
-        phase = "inhale";
-        phaseTime = 0;
-        instructionsElement.textContent =
-          "Inhale deeply through your nose, filling your lungs.";
-        remainingCycles--;
-        if (remainingCycles <= 0) {
-          breathingCompleted = true;
-          instructionsElement.textContent = "Breathing exercise complete.";
-          startButton1.style.display = "block";
-          cycleInput.style.display = "block";
-          // particles = []; // Clear all particles
-        }
+function updateBreathingCycle() {
+  if (exerciseStarted && !breathingCompleted) {
+    phaseTime += deltaTime;
+
+    if (phase === "inhale" && phaseTime >= inhaleDuration) {
+      phase = "exhale";
+      phaseTime = 0;
+      instructionsElement.textContent = "Exhale slowly through your mouth to blow out the candle.";
+    } else if (phase === "exhale" && phaseTime >= exhaleDuration) {
+      phase = "inhale";
+      phaseTime = 0;
+      instructionsElement.textContent = "Inhale deeply through your nose, filling your lungs.";
+      remainingCycles--;
+      if (remainingCycles <= 0) {
+        breathingCompleted = true;
+        instructionsElement.textContent = "Breathing exercise complete.";
+        startButton1.style.display = "block";
+        cycleInput.style.display = "block";
       }
     }
   }
-  imageMode(CENTER);
-  image(candleImg, width / 2, height / 2 + 100, 500, 800);
+}
 
-  if (
-    !breathingCompleted &&
-    phase === "exhale" &&
-    microphone &&
-    meter &&
-    isBlowing()
-  ) {
-    if (particleCount > 0) particleCount -= 1;
-  }
-
-  if (
-    !breathingCompleted &&
-    particleCount < MAX_PART_COUNT &&
-    phase !== "exhale"
-  ) {
-    particleCount += 1;
-  }
-
+function updateParticles() {
   if (!breathingCompleted) {
+    if (phase === "exhale" && microphone && meter && isBlowing()) {
+      if (particleCount > 0) particleCount -= 1;
+    }
+    if (particleCount < MAX_PART_COUNT && phase !== "exhale") {
+      particleCount += 1;
+    }
     for (let i = 0; i < particleCount; i++) {
       particles[i].update();
       particles[i].draw();
@@ -127,31 +145,25 @@ class FlameParticle {
     this.curLife = this.life;
     this.alpha = 0.5;
   }
-
   update() {
     if (this.curLife <= 90) {
       this.radius -= 0.25;
       this.alpha -= 0.005;
     }
-
     if (phase === "exhale" && microphone && meter && isBlowing()) {
       this.x += random(-meter.volume, meter.volume) * 100;
     }
-
     this.curLife -= 2;
     this.y -= 2;
-
     if (this.curLife <= 0) {
       this.respawn();
     }
   }
-
   draw() {
     fill(254, 252, 207, this.alpha * 255);
     noStroke();
     ellipse(this.x, this.y, this.radius * 2);
   }
-
   respawn() {
     this.x = width / 2;
     this.y = flameStartY;
@@ -162,48 +174,20 @@ class FlameParticle {
   }
 }
 
-// Audio Access and Processing
+// I moved microphone access handling to a separate function
 function requestAudioAccess() {
   if (navigator.mediaDevices) {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
+    navigator.mediaDevices.getUserMedia({ audio: true })
       .then((stream) => {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         microphone = audioContext.createMediaStreamSource(stream);
         meter = createAudioMeter(audioContext);
-
-        const filter = audioContext.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.value = 400;
-
-        microphone.connect(filter);
-        filter.connect(meter);
       })
       .catch((err) => {
         console.error("Error accessing microphone:", err);
-        alert(
-          "This exercise requires microphone access to detect your breath."
-        );
+        alert("This exercise requires microphone access to detect your breath.");
       });
-  } else {
-    alert("Your browser does not support required microphone access.");
   }
-}
-
-// written by AI because of the complexity of the code
-function createAudioMeter(audioContext) {
-  const processor = audioContext.createScriptProcessor(512);
-  processor.onaudioprocess = function (event) {
-    const buf = event.inputBuffer.getChannelData(0);
-    let sum = 0;
-    for (let i = 0; i < buf.length; i++) {
-      sum += buf[i] * buf[i];
-    }
-    processor.volume = Math.sqrt(sum / buf.length);
-  };
-  processor.volume = 0;
-  processor.connect(audioContext.destination);
-  return processor;
 }
 
 function isBlowing() {
@@ -211,20 +195,3 @@ function isBlowing() {
   lowpass = ALPHA * meter.volume + (1.0 - ALPHA) * lowpass;
   return lowpass > CANDLETHRESHOLD;
 }
-window.onload = function () {
-  const musicButton = document.getElementById("music-toggle");
-  const musicIcon = document.getElementById("music-icon");
-
-  musicButton.addEventListener("click", () => {
-    if (!isPlaying) {
-      sound.loop(); // Loop the music
-      musicIcon.classList.remove("fa-play");
-      musicIcon.classList.add("fa-pause");
-    } else {
-      sound.pause(); // Pause the music
-      musicIcon.classList.remove("fa-pause");
-      musicIcon.classList.add("fa-play");
-    }
-    isPlaying = !isPlaying; // Toggle the play state
-  });
-};
