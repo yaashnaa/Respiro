@@ -67,7 +67,7 @@ h1{
   gap: 5px;
 }
 
-#cycle-input label {
+#cycle-input #breath-remaining label {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 5px;
@@ -81,6 +81,13 @@ h1{
   border: 1px solid #ccc;
   background: #fefefe;
   text-align: center;
+}
+
+#breath-remaining {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.2rem;
 }
 
 #canvas {
