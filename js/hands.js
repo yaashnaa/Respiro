@@ -28,7 +28,7 @@ function preload() {
   // Load the ML model for hand pose detection
   handPose = ml5.handPose();
 
-  // Load background music (error handling added)
+  // Added error handling for sound loading to ensure it loads correctly.
   sound = loadSound("/sounds/track5.wav",
     () => console.log("Sound loaded successfully."),
     (err) => console.error("Error loading sound:", err)
@@ -54,9 +54,9 @@ function setup() {
 }
 
 function draw() {
-  background(11, 5, 8); // Set a dark background for visibility
+  background(11, 5, 8); 
 
-  updateThresholds(); // Dynamically adjust inhale/exhale thresholds
+  updateThresholds(); 
 
   if (hands.length > 0) {
     showInstructions(false); // Hide instructions when a hand is detected
@@ -68,20 +68,20 @@ function draw() {
 
 // Function to process detected hands and update breathing state
 function processHandPose() {
-  let rightHand = hands[0]; // Get the first detected hand
-  let leftHand = hands.length > 1 ? hands[1] : null; // Check for second hand
+  let rightHand = hands[0]; 
+  let leftHand = hands.length > 1 ? hands[1] : null; 
 
   let avgDistance = calculateAverageDistance(rightHand); // Compute average finger distance
   updateDistanceHistory(avgDistance); // Store distance for smoothing
 
   if (leftHand) {
-    let leftIndexFinger = leftHand.keypoints[8]; // Get index finger of left hand
-    color = getColorFromPosition(leftIndexFinger); // Update visualization color
+    let leftIndexFinger = leftHand.keypoints[8]; 
+    color = getColorFromPosition(leftIndexFinger); 
   }
 
-  updateBreathingState(avgDistance); // Adjust inhale/exhale detection
-  displayBreathingState(state, cycleCount); // Update UI text display
-  drawKaleidoscope(rightHand.keypoints[8], rightHand.keypoints[4]); // Draw visuals
+  updateBreathingState(avgDistance); 
+  displayBreathingState(state, cycleCount)
+  drawKaleidoscope(rightHand.keypoints[8], rightHand.keypoints[4]); 
 }
 
 // Function to calculate average finger distances for state transitions
@@ -94,14 +94,13 @@ function calculateAverageDistance(hand) {
     [4, 20]  // Thumb to pinky finger
   ];
 
-  // Compute Euclidean distances for each finger pair
+ 
   let distances = fingerPairs.map(pair => {
     let p1 = hand.keypoints[pair[0]];
     let p2 = hand.keypoints[pair[1]];
     return dist(p1.x, p1.y, p2.x, p2.y);
   });
 
-  // Return the average of all calculated distances
   return distances.reduce((a, b) => a + b, 0) / distances.length;
 }
 
@@ -155,12 +154,12 @@ function drawPattern(indexFinger, thumb, brightness, sizeFactor) {
     posY = height / 2 + sin(angleFromCenter) * maxDistanceFromCenter;
   }
 
-  // Smooth size
+
   let targetSize = map(distance, 30, 200, 20, 100) * sizeFactor;
   size = lerp(size || targetSize, targetSize, 0.1);
   size = constrain(size, 20, 100);
 
-  // Smooth brightness
+
   let targetBrightness = map(mouseY, 0, height, 50, 255);
   brightness = lerp(brightness || targetBrightness, targetBrightness, 0.1);
   fill(color[0], color[1], brightness, 150);
@@ -168,7 +167,7 @@ function drawPattern(indexFinger, thumb, brightness, sizeFactor) {
   ellipse(posX, posY, size, size);
 }
 
-// Function to update breathing state based on smoothed distances
+
 function updateBreathingState(smoothedDistance) {
   let avgSmoothedDistance = distanceHistory.reduce((a, b) => a + b, 0) / distanceHistory.length;
 

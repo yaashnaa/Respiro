@@ -38,7 +38,7 @@ let sound, isPlaying = false;
 function preload() {
   faceMesh = ml5.faceMesh(options); // Load FaceMesh model
 
-  // Load sound (Ensure p5.sound.js is included in your HTML)
+  // I added error handling for sound loading to ensure it loads correctly.
   sound = loadSound("/sounds/track6.wav",
     () => console.log("Sound loaded successfully."),
     (err) => console.error("Error loading sound:", err)
@@ -46,6 +46,8 @@ function preload() {
 }
 
 //  Setup Function (Initializes Video, Canvas, Sliders, and Face Detection)
+// I structured this function to keep it clean and readable.
+// Moved canvas creation, video setup, and FaceMesh initialization into separate steps.
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont("Satisfy");
@@ -84,6 +86,9 @@ function setup() {
 }
 
 //  Main Draw Loop (Handles Visualization & Breathing Detection)
+// I ensured the visualization updates smoothly.
+//I separated logic into clear steps: background, visualizer updates, face detection updates.
+
 function draw() {
   background(11, 5, 8);
   clear(); // Clear previous frame
@@ -135,6 +140,8 @@ function setBaseline() {
 }
 
 //  Function to Analyze Facial Expressions & Change Visualization
+// I structured this to detect and update states based on expressions.
+// This helps modify the mandala dynamically.
 function checkFacialPoints() {
   if (!visualiser) return;
   if (faces.length > 0 && baselineMouthOpenDist && baselineEyeToEyebrowDist) {
@@ -175,6 +182,8 @@ function checkFacialPoints() {
 }
 
 //  Function to Update Visualizer Color Based on State
+//I moved this outside `draw()` to avoid unnecessary calculations.
+
 function updateVisualizerColor() {
   switch (currentState) {
     case "mouth open":
