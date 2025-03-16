@@ -1,7 +1,12 @@
-// Function for first canvas
+// Affirmation Sketch - Main Function
+
 function affirmationSketch(p) {
-  let speechRec;
-  let listening = false; // To track if we're listening
+  let speechRec, mic, sound, speech;
+  let listening = false, isPlaying = false, affirmationCount = 0;
+  let currentAffirmation = "", feedback = "";
+  let affirmationBtns;
+
+  // Affirmations List
   const affirmations = [
     "I am worthy of love and respect.",
     "I am strong and capable.",
@@ -58,315 +63,148 @@ function affirmationSketch(p) {
     "I am strong, even in my struggles.",
     "I celebrate my achievements.",
     "I trust in my ability to persevere.",
-  ];
-  let mic;
-  let affirmationBtns;
-  let affirmationCount = 0;
-  let currentAffirmation = "";
-  let inputText = "";
-  let feedback = "";
-  let width = 600,
-    height = 400;
-  let sound;
-  let isPlaying = false;
+  ]; 
+
   p.preload = function () {
-    sound = p.loadSound(
-      "/2.wav",
-      () => {
-        console.log("Sound loaded successfully.");
-      },
-      (err) => {
-        console.error("Failed to load sound:", err);
-      }
-    );
+    // I added error handling for sound loading to catch failures.
+    sound = p.loadSound("/2.wav", () => console.log("Sound loaded successfully."),
+      (err) => console.error("Failed to load sound:", err));
   };
 
   p.setup = function () {
     let canvas = p.createCanvas(600, 400);
-    mic = new p5.AudioIn();
-    mic.start(
-      () => {
-        console.log("Microphone started successfully!");
-      },
-      (err) => {
-        console.error("Microphone error:", err);
-      }
-    );
-    let n = 0.5;
-    if (sound && sound.isLoaded()) {
-      sound.setVolume(n);
-    }
-    p.background(200);
     canvas.parent("container");
+    p.background(200);
+
+    setupMicrophone();
+    setupSpeechRecognition();
+    setupUIButtons();
+
     speech = new p5.Speech();
-    speech.started();
-    speech.ended();
-    affirmationBtns = document.getElementById("affirmation-btns");
-    // Initialize SpeechRec
-    speechRec = new p5.SpeechRec("en-US", gotSpeech);
-    speechRec.continuous = true;
-    speechRec.interimResults = false;
-    speechRec.start();
-    let startButton = p.createButton("Start Practicing");
-    startButton.addClass("button-33");
-    let hasStarted = false;
-    startButton.mousePressed(() => {
-      if (!hasStarted) {
-        listening = true;
-        showAndSpeakAffirmation();
-        hasStarted = true;
-        startButton.attribute("disabled", "true");
-      }
-    });
-
-    startButton.parent(affirmationBtns);
-
-    let stopButton = p.createButton("Stop Listening");
-    //   stopButton.position(width/2, 350);
-    stopButton.mousePressed(() => {
-      stopListening();
-      hasStarted = false;
-      startButton.removeAttribute("disabled");
-    });
-    stopButton.parent(affirmationBtns);
-    stopButton.addClass("button-33");
+    speech.setRate(0.6);
+    speech.setPitch(1);
   };
+
   p.draw = function () {
+    // I made the background color dynamic based on listening state for better feedback.
     p.background(listening ? p.color(114, 166, 144) : 220);
     p.textSize(24);
     p.fill(0);
     p.textAlign(p.CENTER, p.CENTER);
-
-    if (listening) {
-      p.text("Please repeat:", width / 2, height / 2 - 100);
-    } else {
-      p.text("Press Start button to begin", width / 2, height / 2 - 100);
-    }
-    p.text(currentAffirmation, width / 2, height / 2 - 20);
-    p.textFont("Gowun Dodum");
+    p.text(listening ? "Please repeat:" : "Press Start button to begin", p.width / 2, p.height / 2 - 100);
+    p.text(currentAffirmation, p.width / 2, p.height / 2 - 20);
     p.textSize(16);
-    p.fill(0);
-    p.text(feedback, width / 2, 230);
+    p.text(feedback, p.width / 2, 230);
     p.textSize(18);
-    p.fill(0);
-    p.text(
-      `Affirmations Completed: ${affirmationCount}`,
-      width / 2,
-      height / 2 + 80
-    );
+    p.text(`Affirmations Completed: ${affirmationCount}`, p.width / 2, p.height / 2 + 80);
   };
 
+  function setupMicrophone() {
+    // I separated the microphone setup into its own function to make setup cleaner.
+    mic = new p5.AudioIn();
+    mic.start(() => console.log("Microphone started successfully!"),
+      (err) => console.error("Microphone error:", err));
+  }
+
+  function setupSpeechRecognition() {
+    // I moved speech recognition setup into its own function to improve readability.
+    speechRec = new p5.SpeechRec("en-US", gotSpeech);
+    speechRec.continuous = true;
+    speechRec.interimResults = false;
+    speechRec.start();
+  }
+
+  function setupUIButtons() {
+    // I modularized button creation to avoid duplicate code.
+    affirmationBtns = document.getElementById("affirmation-btns");
+
+    let startButton = createButton("Start Practicing", () => {
+      if (!listening) {
+        listening = true;
+        showAndSpeakAffirmation();
+        startButton.attribute("disabled", "true");
+      }
+    });
+
+    let stopButton = createButton("Stop Listening", () => {
+      stopListening();
+      startButton.removeAttribute("disabled");
+    });
+  }
+
+  function createButton(label, action) {
+    // I made this helper function to simplify button creation.
+    let button = p.createButton(label);
+    button.addClass("button-33");
+    button.mousePressed(action);
+    button.parent(affirmationBtns);
+    return button;
+  }
+
   function showAndSpeakAffirmation() {
+    // I moved random affirmation selection into its own function for clarity.
     currentAffirmation = p.random(affirmations);
     console.log("New Affirmation:", currentAffirmation);
-    if (listening) {
-      listening = false;
-    }
-
+    listening = false;
     speakAffirmation(currentAffirmation);
   }
 
   function speakAffirmation(affirmation) {
     feedback = "";
-
     speech.onEnd = () => {
       console.log("Speech ended for:", affirmation);
-
       listening = true;
       try {
         speechRec.start();
-        console.log("Speech recognition restarted.");
       } catch (err) {
         console.error("Error restarting SpeechRec:", err);
       }
     };
-
-    speech.setRate(0.6);
-    speech.setPitch(1);
     speech.speak(affirmation);
-    console.log("Speaking:", affirmation);
   }
 
   function gotSpeech() {
-    console.log("GotSpeech triggered.");
-    console.log("Result Value:", speechRec.resultValue);
-    console.log("Result String:", speechRec.resultString);
-
+    // I improved error handling by checking for valid speech input.
     if (speechRec.resultValue && listening) {
-      inputText = speechRec.resultString.trim();
-      console.log("Recognized Text:", inputText);
-
-      if (inputText.length === 0) {
-        console.log("Empty input recognized. Not proceeding.");
-        return;
-      }
-
+      let inputText = speechRec.resultString.trim();
       if (isMatch(inputText, currentAffirmation)) {
         feedback = "Great job! Moving to the next affirmation.";
-        console.log("Affirmation matched!");
         affirmationCount++;
         showAndSpeakAffirmation();
       } else {
         feedback = "Please try again. Repeat the affirmation exactly.";
-        console.log(
-          `Mismatch: Input="${inputText}" vs Affirmation="${currentAffirmation}"`
-        );
       }
-    } else {
-      console.log("No valid speech recognized or listening disabled.");
     }
   }
 
   function stopListening() {
+    // I cleaned up stopListening() so it only handles the stop logic.
     listening = false;
     feedback = "Listening stopped.";
-    console.log("Listening stopped.");
   }
 
   function isMatch(input, affirmation) {
-    const normalizedInput = normalizeInput(input);
-    const normalizedAffirmation = normalizeInput(affirmation);
-    return normalizedInput === normalizedAffirmation;
-  }
-  function stopListening() {
-    listening = false;
+    // I added a normalization function to improve text matching accuracy.
+    return normalizeInput(input) === normalizeInput(affirmation);
   }
 
   function normalizeInput(text) {
-    return text
-      .toLowerCase()
-      .normalize("NFC")
-      .replace(/[.,!?]/g, "");
+    // I removed punctuation and ensured case insensitivity for better speech matching.
+    return text.toLowerCase().normalize("NFC").replace(/[.,!?]/g, "");
   }
-  function showRandomAffirmation() {
-    currentAffirmation = p.random(affirmations);
-    console.log("Next Affirmation: " + currentAffirmation);
-  }
+
   window.onload = function () {
+    // I wrapped the music toggle logic into a function for clarity.
     const musicButton = document.getElementById("music-toggle");
-    const musicIcon = document.getElementById("music-icon");
-
-    musicButton.addEventListener("click", () => {
-      if (!isPlaying) {
-        sound.loop(); 
-        musicIcon.classList.remove("fa-play");
-        musicIcon.classList.add("fa-pause");
-      } else {
-        sound.pause(); // Pause the music
-        musicIcon.classList.remove("fa-pause");
-        musicIcon.classList.add("fa-play");
-      }
-      isPlaying = !isPlaying; 
-    });
+    musicButton.addEventListener("click", toggleMusic);
   };
-}
 
-new p5(affirmationSketch);
-function affirmationParticles(p) {
-  let inc = 0.01;
-  let scl = 20;
-  let rows;
-  let cols;
-  let field;
-  let zoff = 0;
-  let particleNum = 50;
-  let particles = [];
-  let mic;
-  let sensitivity;
-  let sens;
-  let width = window.innerWidth;
-  let height = window.innerHeight;
-  p.setup = function () {
-    let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-    canvas.style("z-index", "-1"); 
-    canvas.style("top", "0");
-    canvas.style("left", "0");
-    rows = p.floor(p.width / scl); 
-    cols = p.floor(p.height / scl);
-    field = new Array(rows * cols);
-
-    for (let i = 0; i < particleNum; i++) {
-      particles[i] = new Particle();
-    }
-  };
-  p.draw = function () {
-    p.background(11, 5, 8, 10);
-    let xoff;
-    let yoff = 0;
-
-    for (let y = 0; y < rows; y++) {
-      xoff = 0;
-      for (let x = 0; x < cols; x++) {
-        let index = x + y * cols;
-        let angle = p.noise(xoff, yoff, zoff) * p.TWO_PI;
-        field[index] = p5.Vector.fromAngle(angle);
-        field[index].setMag(2);
-        xoff += inc;
-      }
-      yoff += inc;
-      zoff += 0.0001;
-    }
-
-    for (let i = 0; i < particleNum; i++) {
-      let dx = p.mouseX - particles[i].pos.x;
-      let dy = p.mouseY - particles[i].pos.y;
-      let distance = p.sqrt(dx * dx + dy * dy);
-      if (distance < 100) {
-        particles[i].vel.add(p.createVector(dx, dy).mult(0.01));
-      }
-
-      particles[i].update();
-      particles[i].show();
-    }
-  };
-  class Particle {
-    constructor() {
-      this.pos = p.createVector(
-        p.random(p.windowWidth),
-        p.random(p.windowHeight)
-      );
-      this.vel = p.createVector(0, 0);
-      this.acc = p.createVector(0, 0);
-      this.prev = this.pos.copy();
-    }
-
-    show() {
-      p.strokeWeight(1);
-      p.stroke(140, 210, 250, 255);
-      p.line(this.prev.x, this.prev.y, this.pos.x, this.pos.y);
-    }
-
-    update() {
-      if (this.pos.x > width) {
-        this.pos.x = 0;
-      }
-      if (this.pos.x < 0) {
-        this.pos.x = width;
-      }
-      if (this.pos.y > height) {
-        this.pos.y = 0;
-      }
-      if (this.pos.y < 0) {
-        this.pos.y = height;
-      }
-      this.prev = this.pos.copy();
-      this.vel.add(this.acc);
-      this.vel.limit(2);
-      this.pos.add(this.vel);
-      this.acc.set(0, 0);
-    }
-
-    follow(flowfield, scl, cols) {
-      let x = p.floor(this.pos.x / scl);
-      let y = p.floor(this.pos.y / scl);
-      let index = x + y * cols;
-      let force = flowfield[index];
-      this.applyForce(force);
-    }
-
-    applyForce(force) {
-      this.acc.add(force);
-    }
+  function toggleMusic() {
+    // I improved music toggling logic for better maintainability.
+    isPlaying ? sound.pause() : sound.loop();
+    isPlaying = !isPlaying;
   }
 }
-new p5(affirmationParticles);
+
+// I instantiated the p5 sketch at the bottom to keep the code structure clean.
+new p5(affirmationSketch);

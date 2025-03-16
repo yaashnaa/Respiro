@@ -133,20 +133,20 @@ function windowResized() {
     rows = floor(height / scl);
   }
 
-  // window.onload = function () {
-  //   const musicButton = document.getElementById("music-toggle");
-  //   const musicIcon = document.getElementById("music-icon");
+  window.onload = function () {
+    const musicButton = document.getElementById("music-toggle");
+    const musicIcon = document.getElementById("music-icon");
   
-  //   musicButton.addEventListener("click", () => {
-  //     if (!isPlaying) {
-  //       sound.loop(); // Loop the music
-  //       musicIcon.classList.remove("fa-play");
-  //       musicIcon.classList.add("fa-pause");
-  //     } else {
-  //       sound.pause(); // Pause the music
-  //       musicIcon.classList.remove("fa-pause");
-  //       musicIcon.classList.add("fa-play");
-  //     }
-  //     isPlaying = !isPlaying; // Toggle the play state
-  //   });
-  // };
+    musicButton.addEventListener("click", () => {
+      if (!isPlaying) {
+        sound.loop(); // Loop the music
+        musicIcon.classList.remove("fa-play");
+        musicIcon.classList.add("fa-pause");
+      } else {
+        sound.pause(); // Pause the music
+        musicIcon.classList.remove("fa-pause");
+        musicIcon.classList.add("fa-play");
+      }
+      isPlaying = !isPlaying; // Toggle the play state
+    });
+  };
